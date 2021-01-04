@@ -1,0 +1,45 @@
+function [Reward,underground,bad_angles] = Rewardfunction(y1,action)
+
+    underground = 0;
+    bad_angles = 0;
+    angle_control = pi/2;
+    
+    q1 = y1(1);
+    q2 = y1(2);
+    q3 = y1(3);
+    
+    z_target = 0.48;
+
+    [~,zh,dxh,~] = kin_hip(y1(1:3),y1(4:6));
+    [~, z_swf, ~, ~] = kin_swf(y1(1:3),y1(4:6));
+     
+    reward_speed = 0.5*min(dxh,1);
+    
+    penality_zswf = 3*z_swf;
+    
+    penality_q1q2 = 4*abs(q1 - (-q2));
+    
+    %reward for surviving
+    reward_survival = 0.5;
+    
+    %reward for keeping the torso upwards
+    penality_torso = 0.125*((q3 - pi/6)^2); 
+
+    penality_z = 1.5*abs(zh-z_target);
+
+    penality_effort = 0.002*sum(action.^2);
+    
+    Reward = reward_speed - penality_torso + reward_survival - penality_z - penality_zswf - penality_q1q2 - penality_effort;
+   
+    %% Termination conditions
+    %if the robot makes impossible angle => STOP
+    if  ( abs(q1) >= angle_control || abs(q2) >= angle_control || abs(q3) >= angle_control)
+        bad_angles = 1;
+    end
+    
+    
+    if zh < 0
+       underground = 1;
+    end
+    
+end
