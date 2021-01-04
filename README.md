@@ -1,6 +1,6 @@
  ## Three-link 2D biped walker modeling and controlling with PDcontroller and reinforcement learning
 
- Mini-project to learn a biped robot to walk using Deep Reinforcement Learning
+ Mini-project to learn a biped robot to walk using Deep Reinforcement Learning. Check LeggedRobotsProject.pdf for more information.
  
 ### Requirement
 
